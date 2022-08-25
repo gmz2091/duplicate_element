@@ -53,7 +53,13 @@ function App() {
           setPreview();
         }}>Reset</button>
         <button className="button" onClick={() => setDuplicateF(true)}>Duplicate</button>
-        <button className="button" onClick={handlePrint}>Print</button>
+        <button className="button" onClick={() => {
+          if(preview){
+            handlePrint();
+          } else {
+            alert('Please select a file first')
+          }
+        }}>Print</button>
         <div ref={componentRef}>
           <ToPrint image={preview} duplicateF={duplicateF} counter={counter} />
         </div>
