@@ -1,11 +1,16 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ToPrint from './components/DocPDF';
+import { useReactToPrint } from 'react-to-print';
+
 
 function App() {
   const [counter, setCounter] = useState(0);
   const [duplicateF, setDuplicateF] = useState(false);
   const [selectedFile, setSelectedFile] = useState()
   const [preview, setPreview] = useState()
+
+  const componentRef = useRef();
 
   // create a preview as a side effect, whenever selected file is changed
   useEffect(() => {
@@ -31,15 +36,9 @@ function App() {
       setSelectedFile(e.target.files[0])
   }
 
-
-  const duplicate = (n) => {
-    let arr = [];
-    for (let i = 0; i < n; i++) {
-      arr.push(<div key={i} className="contents_img"><img src={preview} alt="preview" /></div>);
-    }
-    return arr;
-  }
-
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
 
   return (
@@ -54,11 +53,10 @@ function App() {
           setPreview();
         }}>Reset</button>
         <button className="button" onClick={() => setDuplicateF(true)}>Duplicate</button>
-        {duplicateF ? (
-          <div className="duplicate">
-            {duplicate(counter)}
-          </div>
-        ) : null}
+        <button className="button" onClick={handlePrint}>Print</button>
+        <div ref={componentRef}>
+          <ToPrint image={preview} duplicateF={duplicateF} counter={counter} />
+        </div>
         </div>
       </header>
     </div>
